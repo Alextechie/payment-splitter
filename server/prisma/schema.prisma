@@ -1,0 +1,64 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Payment {
+  id        String   @id @default(uuid())
+  amoung    Int
+  currency  String
+  createdAt DateTime @default(now())
+  status    String   @default("PENDING")
+  rulesUsed String?
+  splits    Split[]
+}
+
+model Split {
+  id          String   @id @default(uuid())
+  amount      Int
+  recipientId String
+  paymentId   String
+  createdAt   DateTime @default(now())
+
+  payment   Payment   @relation(fields: [paymentId], references: [id])
+  recipient Recipient @relation(fields: [recipientId], references: [id])
+}
+
+model Recipient {
+  id      String  @id @default(uuid())
+  name    String
+  account String
+  splits  Split[]
+  Rule    Rule[]
+}
+
+model Rule {
+  id          String @id @default(uuid())
+  recipientId String
+  type        String  // perentage, flat or priority
+  value       Int
+  priority    String
+  groupId     String
+
+  recipient Recipient @relation(fields: [recipientId], references: [id])
+  group     RuleGroup @relation(fields: [groupId], references: [id])
+}
+
+model RuleGroup {
+  id    String @id @default(uuid())
+  name  String
+  rules Rule[]
+}
+
+

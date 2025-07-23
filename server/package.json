@@ -1,0 +1,21 @@
+{
+  "name": "server",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "devDependencies": {
+    "@types/bun": "latest",
+    "prettier-plugin-prisma": "^5.0.0"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.12.0",
+    "@types/express": "^5.0.3",
+    "bcrypt": "^6.0.0",
+    "express": "^5.1.0",
+    "prisma": "^6.12.0",
+    "zod": "^4.0.5"
+  }
+}

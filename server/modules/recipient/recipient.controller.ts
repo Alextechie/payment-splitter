@@ -1,7 +1,6 @@
 import * as recipientService from "./recipient.service";
 import { createRecipientSchema, updateRecipientSchema } from "./recipient.schema";
 import type { Request, Response } from "express";
-import { string } from "zod/mini";
 
 export const create = async (req: Request, res: Response) => {
     try {

@@ -1,5 +1,6 @@
 import express from "express";
 import { recipientRoutes } from "./modules/recipient/recipient.routes";
+import { ruleGroupRoutes } from "./modules/rule-group/rule-group.routes";
 
 const app = express();
 
@@ -9,6 +10,7 @@ const port = 4000;
 
 // routes
 app.use("/", recipientRoutes);
+app.use("/group", ruleGroupRoutes)
 
 // app.get("/", (_req, res) => res.send('Payment Splitter API'))
 

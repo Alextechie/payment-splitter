@@ -48,7 +48,7 @@ model Rule {
   recipientId String
   type        String  // perentage, flat or priority
   value       Int
-  priority    String
+  priority    Int?
   groupId     String
 
   recipient Recipient @relation(fields: [recipientId], references: [id])
@@ -59,6 +59,7 @@ model RuleGroup {
   id    String @id @default(uuid())
   name  String
   rules Rule[]
+  createdAt DateTime @default(now())
 }
 
 

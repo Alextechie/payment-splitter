@@ -16,23 +16,23 @@ datasource db {
 
 model Payment {
   id        String   @id @default(uuid())
-  amoung    Int
+  amount    Int
   currency  String
   createdAt DateTime @default(now())
   status    String   @default("PENDING")
   rulesUsed String?
-  splits    Split[]
 }
 
 model Split {
-  id          String   @id @default(uuid())
-  amount      Int
-  recipientId String
-  paymentId   String
-  createdAt   DateTime @default(now())
+  id    String @id @default(uuid())
+  type  String
+  value Float
 
-  payment   Payment   @relation(fields: [paymentId], references: [id])
-  recipient Recipient @relation(fields: [recipientId], references: [id])
+  recipientId String
+  recipient   Recipient @relation(fields: [recipientId], references: [id])
+
+  outcomeId String
+  outcome   Outcome @relation(fields: [outcomeId], references: [id])
 }
 
 model Recipient {
@@ -40,26 +40,44 @@ model Recipient {
   name    String
   account String
   splits  Split[]
-  Rule    Rule[]
+  rules   Rule[]
 }
 
 model Rule {
-  id          String @id @default(uuid())
-  recipientId String
-  type        String  // perentage, flat or priority
-  value       Int
+  id          String      @id @default(uuid())
   priority    Int?
+  conditions  Condition[]
+  group       RuleGroup   @relation(fields: [groupId], references: [id])
   groupId     String
-
-  recipient Recipient @relation(fields: [recipientId], references: [id])
-  group     RuleGroup @relation(fields: [groupId], references: [id])
+  Outcome     Outcome?
+  Recipient   Recipient?  @relation(fields: [recipientId], references: [id])
+  recipientId String?
 }
 
 model RuleGroup {
-  id    String @id @default(uuid())
-  name  String
-  rules Rule[]
+  id        String   @id @default(uuid())
+  name      String
+  rules     Rule[]
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
+model Condition {
+  id       String @id @default(uuid())
+  field    String
+  operator String
+  value    Json
 
+  ruleId String
+  rule   Rule   @relation(fields: [ruleId], references: [id])
+}
+
+model Outcome {
+  id      String  @id @default(uuid())
+  status  String
+  bonus   Int?
+  message String?
+  splits  Split[]
+  ruleId  String  @unique
+  rule    Rule    @relation(fields: [ruleId], references: [id])
+}

@@ -1,27 +1,41 @@
 import type { Request, Response } from "express";
-import { createRuleGroupSchema, updateRuleGroupSchema } from "./role-group.schema";
-import * as ruleGroupService from "./rule-group.service";
+import { ruleGroupSchema, updateRuleGroupSchema } from "../schema/role-group.schema";
+import * as ruleGroupService from "../services/rule-group.service";
+import { ZodError } from "zod";
+import { validateAndEnrich } from "../services/validateAndEnrich";
 
 export const createGroup = async (req: Request, res: Response) => {
-    try {
-        const parsed = createRuleGroupSchema.safeParse(req.body);
-        if(!parsed.success) return res.status(400).json({
-            message: 'Invalid inputs',
-            err: parsed.error
+    const parsed = ruleGroupSchema.safeParse(req.body);
+
+
+    if(!parsed.success){
+        return res.status(400).json({
+            message: "Invalid inputs",
+            err: parsed.error.format()
         })
+    }
 
-        const ruleGroup = await ruleGroupService.createRuleGroup(parsed.data);
+    const enrichedInput = validateAndEnrich(parsed.data)
 
-        res.status(201).json({
-            message: 'Rule group created',
+    try {
+
+        const ruleGroup = await ruleGroupService.createRuleGroup(enrichedInput);
+
+        return res.status(201).json({
+            message: 'Rule group created succesfully',
             ruleGroup
         })
 
     } catch (err) {
-        return res.status(500).json({
-            message: 'Error creating rule group',
-            detail: err
-        })
+
+        if(err instanceof ZodError){
+            res.status(400).json(err.message)
+        } else {
+            res.status(500).json({
+                message: "Internal server error"
+            })
+        }
+
     }
 }
 
@@ -39,7 +53,7 @@ export const getRuleGroupById = async (req: Request, res: Response) => {
 
     const ruleGroup = await ruleGroupService.getRuleById(String(id));
 
-    if(!ruleGroup){
+    if (!ruleGroup) {
         return res.status(404).json({
             message: 'Rule group not found'
         })
@@ -53,7 +67,7 @@ export const updatesRuleGroup = async (req: Request, res: Response) => {
     // input validation for the new ruleGroup
     const parsed = updateRuleGroupSchema.safeParse(req.body);
 
-    if(!parsed.success){
+    if (!parsed.success) {
         return res.status(400).json({
             message: 'Invalid inputs',
             err: parsed.error

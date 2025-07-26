@@ -1,6 +1,6 @@
 import express from "express";
 import { recipientRoutes } from "./modules/recipient/recipient.routes";
-import { ruleGroupRoutes } from "./modules/rule-group/rule-group.routes";
+import { ruleGroupRoutes } from "./modules/rule-group/routes/rule-group.routes";
 
 const app = express();
 

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { allRuleGroups, createGroup, getRuleGroupById, updatesRuleGroup } from "./rule-group.controller";
+import { allRuleGroups, createGroup, getRuleGroupById, updatesRuleGroup } from "../controllers/rule-group.controller";
 
 const router = Router();
 

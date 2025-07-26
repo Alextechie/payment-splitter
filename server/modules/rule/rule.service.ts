@@ -5,4 +5,5 @@ import type { ruleInput } from "./rule.types";
 
 
 export const createRules = async (rules: ruleInput, groupId: string) => {
+    
 }

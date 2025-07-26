@@ -1,5 +1,5 @@
 import type z from "zod";
-import type { createRuleSchema } from "../rule-group/role-group.schema";
+import type { createRuleSchema } from "../rule-group/schema/role-group.schema";
 
 export type ruleInput = z.infer<typeof createRuleSchema>
 
